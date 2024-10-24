@@ -1,0 +1,52 @@
+Tabela saidas:
+ - Referencial;
+ - Descrição;
+ - Valor;
+ - Categoria; 
+ - Mes
+
+
+
+ BKP DASHBOARD
+
+ <!-- TITULO -->
+            <div class="header-dash">
+            <h1 class="titulo-pag"> Dashboard </h1>
+            </div>
+
+            <!-- TOTALIZADORES -->
+            <div class="infos-dash">
+                <div class="dash-entradas">
+                    <h3 class="tit-dash">Entradas</h3>
+                    <div class="val-dash">
+                    <p> R$ 2641,25 </p>
+                    </div>
+                </div>
+
+                <div class="dash-saidas">
+                    <h3 class="tit-dash">Saidas</h3>
+                    <div class="val-dash">
+                    <p> R$ <?php echo $tot_saidas['total_saidas']?> </p>
+                    </div>
+                </div>
+
+                <div class="dash-saldo">
+                    <h3 class="tit-dash">Saldo</h3>
+                    <div class="val-dash">
+                    <p> R$ 1345,56 </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RELATORIOS RAPIDOS -->
+            <div class="relatorios">
+
+            <div class="tit-rels">
+                <p style="margin-left:2%;"> Relatorios </p>
+            </div>
+
+            <div class="rel-saidas">
+                <h4>Saidas</h4>
+            </div>
+
+            </div>
