@@ -89,7 +89,7 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                         <option value="2">Débito</option>
                     </select>
 
-                    <button type="submit" name="add">Registrar</button>
+                    <button type="submit" name="add" class="registrar">Registrar</button>
                 </form>
 
                 <?php
@@ -112,7 +112,7 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                 </div>
 
                 <div class="exibe-gastos">
-                <table class="saidas">
+                <table class="saidas" border="1px solid black">
                     <thead>
                     <th>Gasto</th>
                     <th>Valor</th>
@@ -120,7 +120,7 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                     <th>Mês</th>
                     <th>Origem</th>
                     <th>Data</th>
-                    <th></th>
+                    <th colspan="2"></th>
                     </thead>
 
                     <?php
@@ -135,8 +135,9 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                         <td><?php echo $dados['mes']; ?></td>
                         <td><form method="GET">
                                 <input type="hidden" name="referencial" value="<?php echo $dados['referencial']; ?>">
-                                <button type="submit" name="delete"><span class="material-icons" style="font-size: 3ch; color:red;">delete</span></button>
+                                <button type="submit" class="crud-bot" name="delete" style="cursor:pointer;"><span class="material-icons" style="font-size: 3ch; color:red;">delete</span></button>
                             </form></td>
+
                         <?php
                         if (isset($_GET["delete"]) && isset($_GET["referencial"])) {
                             $referencial = intval($_GET["referencial"]); 
@@ -154,6 +155,11 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                             }
                         }
                         ?>
+                        
+                        <td><form method="GET">
+                                <input type="hidden" name="referencial" value="<?php echo $dados['referencial']; ?>">
+                                <button type="submit" class="crud-bot" name="editar" style="cursor:pointer;"><span class="material-icons" style="font-size: 3ch;">edit</span></button>
+                            </form></td>
                     </tbody>
                     <?php
                     }
@@ -162,7 +168,7 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                     <tfoot>
                       <tr>
                         <td>Total</td>
-                        <td colspan="6">R$ <?php echo $tot_saidas['total_saidas']?></td>
+                        <td colspan="7">R$ <?php echo $tot_saidas['total_saidas']?></td>
                       </tr>
                     </tfoot>
                 </table>
