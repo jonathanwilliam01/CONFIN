@@ -183,3 +183,8 @@ a{
     justify-content: center;
     margin-top: 3%;
 }
+
+td, th, table{
+    border: 1px solid black; 
+    border-spacing: 0;
+}

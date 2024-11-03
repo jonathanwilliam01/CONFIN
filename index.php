@@ -31,8 +31,8 @@ $tot_saidas = $sql_query ->fetch_assoc();
 
             <div class="opcoes">
                 <a href=""><div class="li"><div class="nome--menu">Dashboard</div><span class="material-icons" style="font-size: 2ch;">chevron_right</span></div></a>
-                <div class="li" pagina="saidas.php"><div class="nome--menu">Saídas</div><span class="material-icons" style="font-size: 2ch;">chevron_right</span></div>
-                <div class="li" pagina="entradas.php"><div class="nome--menu">Entradas</div><span class="material-icons" style="font-size: 2ch;">chevron_right</span></div>
+                <a href="/projetos/sistema_financeiro/saidas.php"><div class="li"><div class="nome--menu">Saídas</div><span class="material-icons" style="font-size: 2ch;">chevron_right</span></div></a>
+                <a href="/projetos/sistema_financeiro/entradas.php"><div class="li"><div class="nome--menu">Entradas</div><span class="material-icons" style="font-size: 2ch;">chevron_right</span></div></a>
                 <div class="li" pagina="metas.php"><div class="nome--menu">Metas</div><span class="material-icons" style="font-size: 2ch;">chevron_right</span></div>
                 <div class="li" pagina="relatorios.php"><div class="nome--menu">Relatórios</div><span class="material-icons" style="font-size: 2ch;">chevron_right</span></div>
                 <div class="li" pagina="configuracoes.php"><div class="nome--menu">Configurações</div><span class="material-icons" style="font-size: 2ch;">settings</span></div>
