@@ -2,16 +2,20 @@
 
 include("conexao.php");
 
-$sql_tot_saidas = "select sum(valor) as total_saidas from saidas";
-$sql_query = $mysqli->query($sql_tot_saidas) or die("Erro ao consultar" . $mysqli ->error);
-$tot_saidas = $sql_query ->fetch_assoc();
+$referencial = intval($_GET["referencial"]);
 
-$saidas = "select s.referencial, s.gasto, s.valor, 
-ca.categoria, m.mes, o.origem, date_format(s.data, '%d/%m/%Y') as data
+$saidas = "select 
+s.referencial, 
+s.gasto, 
+s.valor, 
+s.categoria as id_categoria, ca.categoria, 
+s.mes as id_mes, m.mes, 
+s.origem as id_origem, o.origem
 from saidas s
 left join meses m on m.id = s.mes
 left join categorias ca on ca.id = s.categoria
 left join origens o on o.id = s.origem
+where s.referencial = $referencial
 order by s.categoria, s.referencial";
 $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysqli ->error);
 
@@ -56,11 +60,16 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
             <div class="conteudos">
                 <div class="novo-gasto">
                 <form method="post">
-                    <input type="text" placeholder="Descrição" name="gasto">
-                    <input type="number" step="0.01" placeholder="Valor R$" name="valor">
+
+                <?php
+                    while($dados = $sql_saidas->fetch_assoc()) {
+                        ?>
+
+                    <input type="text" placeholder="Descrição do gasto" name="gasto" value="<?php echo $dados['gasto'] ?>">
+                    <input type="number" placeholder="Valor R$" name="valor" value="<?php echo $dados['valor'] ?>">
                     
                     <select id="categoria" name="categoria">
-                        <option value="" disabled selected>Categoria</option>
+                        <option value="<?php echo $dados['id_categoria'] ?>" selected><?php echo $dados['categoria'] ?></option>
                         <option value="1">Fixo</option>
                         <option value="2">Compras</option>
                         <option value="3">Alimentação</option>
@@ -69,7 +78,7 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                     </select>
 
                     <select id="mes" name="mes">
-                        <option value="" disabled selected>Mês</option>
+                        <option value="<?php echo $dados['id_mes'] ?>" selected><?php echo $dados['mes'] ?></option>
                         <option value="01">Janeiro</option>
                         <option value="02">Fevereiro</option>
                         <option value="03">Março</option>
@@ -85,97 +94,38 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                     </select>
 
                     <select id="origem" name="origem">
-                        <option value="" disabled selected>Origem</option>
+                        <option value="<?php echo $dados['id_origem'] ?>" selected><?php echo $dados['origem'] ?></option>
                         <option value="1">Crédito</option>
                         <option value="2">Débito</option>
                     </select>
+                    <?php
+                    }
+                    ?>
 
-                    <button type="submit" name="add" class="registrar">Registrar</button>
+                    <button type="submit" name="edit" class="registrar">Editar</button>
+                    <button name="cancel" class="registrar"><a href="saidas.php">Cancelar</a></button>
                 </form>
 
                 <?php
-                if(isset($_POST["add"])){
+                if(isset($_POST["edit"])){
                     $gasto = $_POST['gasto'];
                     $valor = $_POST['valor'];
                     $categoria = $_POST['categoria'];
                     $mes = $_POST['mes'];
                     $origem = $_POST['origem'];
 
-                    $sql_code = "INSERT INTO saidas(gasto, valor, categoria, mes, origem) VALUES ('$gasto', '$valor', '$categoria','$mes', '$origem')";
+                    $sql_code = "update saidas set gasto = '$gasto', valor = $valor, categoria = '$categoria', mes = '$mes', origem = '$origem' where referencial = $referencial";
 
                     if(mysqli_query($mysqli, $sql_code)) {
-                        echo "<script>window.location.href = window.location.href;</script>";
+                        echo "<script>window.location.href = 'saidas.php';</script>";
                     } else {
-                        echo "<script>alert('Erro ao cadastrar gasto: " . mysqli_error($mysqli) . "');</script>";
+                        echo "<script>alert('Erro ao editar gasto: " . mysqli_error($mysqli) . "');</script>";
                     }
                     }
                 ?>
                 </div>
 
-                <div class="exibe-gastos">
-                <table class="saidas" border="1px solid black">
-                    <thead>
-                    <th>Gasto</th>
-                    <th>Valor</th>
-                    <th>Categoria</th>
-                    <th>Mês</th>
-                    <th>Origem</th>
-                    <th>Data inserção</th>
-                    <th colspan="2"></th>
-                    </thead>
-
-                    <?php
-                    while($dados = $sql_saidas->fetch_assoc()) {
-                        ?>
-                    <tbody>
-                        <td><?php echo $dados['gasto']; ?></td>
-                        <td>R$ <?php echo $dados['valor']; ?></td>
-                        <td><?php echo $dados['categoria']; ?></td>
-                        <td><?php echo $dados['mes']; ?></td>
-                        <td><?php echo $dados['origem']; ?></td>
-                        <td><?php echo $dados['data']; ?></td>
-                        <td><form method="GET">
-                                <input type="hidden" name="referencial" value="<?php echo $dados['referencial']; ?>">
-                                <button type="submit" class="crud-bot" name="delete" style="cursor:pointer;"><span class="material-icons" style="font-size: 3ch; color:red;">delete</span></button>
-                            </form></td>
-
-                        <?php
-                        if (isset($_GET["delete"]) && isset($_GET["referencial"])) {
-                            $referencial = intval($_GET["referencial"]); 
-                        
-                            if ($referencial > 0) { 
-                                $sql_delete = "DELETE FROM saidas WHERE referencial = $referencial";
-                            
-                                if ($mysqli->query($sql_delete) === TRUE) {
-                                    echo "<script>window.location.href = 'saidas.php';</script>"; 
-                                } else {
-                                    echo "<script>alert('Erro ao deletar gasto: " . $mysqli->error . "');</script>";
-                                }
-                            } else {
-                                echo "<script>alert('ID inválido para exclusão');</script>";
-                            }
-                        }
-                        ?>
                 
-                        
-                        <td><a href="editar_saida.php?referencial=<?php echo $dados['referencial']?>">
-                                <span class="material-icons" style="font-size: 3ch; cursor:pointer">edit</span>
-                            </a></td>
-                    </tbody>
-                    <?php
-                    }
-                    ?>
-
-                    <tfoot>
-                      <tr>
-                        <td>Total</td>
-                        <td colspan="7">R$ <?php echo $tot_saidas['total_saidas']?></td>
-                      </tr>
-                    </tfoot>
-                </table>
-                </div>
-
-            </div>
         </div>
     </div>
 </body>

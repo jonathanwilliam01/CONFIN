@@ -181,7 +181,15 @@ a{
 .novo-gasto, .exibe-gastos{
     display: flex;
     justify-content: center;
-    margin-top: 3%;
+    margin-top: 2%;
+}
+
+.novo-gasto{
+    height: 10%;
+}
+
+.conteudos{
+    height: 85%;
 }
 
 td, th, table{
@@ -190,14 +198,26 @@ td, th, table{
 }
 
 .registrar{
-    background-color: rgb(0, 255, 64);
+    background-color: rgb(4, 245, 124);
     border: 1px solid black;
     font-weight: bold;
     border-radius: 1em;
     cursor: pointer;
+    height: 60%;
+    width: 13%;
 }
+
+    .registrar:hover{
+        background-color: rgb(10, 223, 116);
+    }
 
 .crud-bot{
     background-color: rgb(250, 250, 250);
-    border:none
+    border:none;
+}
+
+input, select {
+    height: 60%;
+    width: 15%;
+    border-radius: 0.5em;
 }
