@@ -4,6 +4,10 @@ include("conexao.php");
 
 $referencial = intval($_GET["referencial"]);
 
+$sql_tot_saidas = "select sum(valor) as total_saidas from saidas where referencial = $referencial";
+$sql_query = $mysqli->query($sql_tot_saidas) or die("Erro ao consultar" . $mysqli ->error);
+$tot_saidas = $sql_query ->fetch_assoc();
+
 $saidas = "select 
 s.referencial, 
 s.gasto, 
@@ -54,17 +58,15 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
 
              <!-- TITULO -->
              <div class="header-dash">
-            <h1 class="titulo-pag"> Saidas </h1>
+             <?php
+                    while($dados = $sql_saidas->fetch_assoc()) {
+                        ?>
+            <h1 class="titulo-pag"> Editar saida - "<?php echo $dados['gasto']?>" </h1>
             </div>
             
             <div class="conteudos">
-                <div class="novo-gasto">
+                <div class="editar-gasto">
                 <form method="post">
-
-                <?php
-                    while($dados = $sql_saidas->fetch_assoc()) {
-                        ?>
-
                     <input type="text" placeholder="Descrição do gasto" name="gasto" value="<?php echo $dados['gasto'] ?>">
                     <input type="number" placeholder="Valor R$" name="valor" value="<?php echo $dados['valor'] ?>">
                     
@@ -103,7 +105,7 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                     ?>
 
                     <button type="submit" name="edit" class="registrar">Editar</button>
-                    <button name="cancel" class="registrar"><a href="saidas.php">Cancelar</a></button>
+                    <button name="back" class="cancelar"><a href="saidas.php">Cancelar</a></button>
                 </form>
 
                 <?php

@@ -113,7 +113,7 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                 </div>
 
                 <div class="exibe-gastos">
-                <table class="saidas" border="1px solid black">
+                <table class="saidas">
                     <thead>
                     <th>Gasto</th>
                     <th>Valor</th>
@@ -169,7 +169,8 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                     <tfoot>
                       <tr>
                         <td>Total</td>
-                        <td colspan="7">R$ <?php echo $tot_saidas['total_saidas']?></td>
+                        <td>R$ <?php echo $tot_saidas['total_saidas']?></td>
+                        <td colspan="6"></td>
                       </tr>
                     </tfoot>
                 </table>
