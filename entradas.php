@@ -2,18 +2,20 @@
 
 include("conexao.php");
 
-$sql_tot_saidas = "select sum(valor) as total_saidas from saidas";
-$sql_query = $mysqli->query($sql_tot_saidas) or die("Erro ao consultar" . $mysqli ->error);
-$tot_saidas = $sql_query ->fetch_assoc();
+$sql_tot_entradas = "select sum(valor) as total_entradas from entradas";
+$sql_query = $mysqli->query($sql_tot_entradas) or die("Erro ao consultar" . $mysqli ->error);
+$tot_entradas = $sql_query ->fetch_assoc();
 
-$saidas = "select s.referencial, s.gasto, s.valor, 
-ca.categoria, m.mes, o.origem, date_format(s.data, '%d/%m/%Y') as data
-from saidas s
-left join meses m on m.id = s.mes
-left join categorias ca on ca.id = s.categoria
-left join origens o on o.id = s.origem
-order by s.categoria, s.referencial";
-$sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysqli ->error);
+$qtd_tot_entradas = "select count(referencial) as qtd_entradas from entradas";
+$sql_query = $mysqli->query($qtd_tot_entradas) or die("Erro ao consultar" . $mysqli ->error);
+$qtd_entradas = $sql_query ->fetch_assoc();
+
+$entradas = "select e.referencial, e.entrada, e.valor, 
+m.mes, date_format(e.data, '%d/%m/%Y') as data
+from entradas e
+left join meses m on m.id = e.mes
+order by e.entrada, e.referencial";
+$sql_entradas = $mysqli->query(query: $entradas) or die("Erro ao consultar" . $mysqli ->error);
 
 ?>
 
@@ -56,17 +58,8 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
             <div class="conteudos">
                 <div class="novo-gasto">
                 <form method="post">
-                    <input type="text" placeholder="Descrição" name="gasto">
+                    <input type="text" placeholder="Descrição" name="entrada">
                     <input type="number" step="0.01" placeholder="Valor R$" name="valor">
-                    
-                    <select id="categoria" name="categoria">
-                        <option value="" disabled selected>Categoria</option>
-                        <option value="1">Fixo</option>
-                        <option value="2">Compras</option>
-                        <option value="3">Alimentação</option>
-                        <option value="4">Moto</option>
-                        <option value="5">Mercado</option>
-                    </select>
 
                     <select id="mes" name="mes">
                         <option value="" disabled selected>Mês</option>
@@ -84,24 +77,16 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                         <option value="12">Dezembro</option>
                     </select>
 
-                    <select id="origem" name="origem">
-                        <option value="" disabled selected>Origem</option>
-                        <option value="1">Crédito</option>
-                        <option value="2">Débito</option>
-                    </select>
-
                     <button type="submit" name="add" class="registrar">Registrar</button>
                 </form>
 
                 <?php
                 if(isset($_POST["add"])){
-                    $gasto = $_POST['gasto'];
+                    $gasto = $_POST['entrada'];
                     $valor = $_POST['valor'];
-                    $categoria = $_POST['categoria'];
                     $mes = $_POST['mes'];
-                    $origem = $_POST['origem'];
 
-                    $sql_code = "INSERT INTO saidas(gasto, valor, categoria, mes, origem) VALUES ('$gasto', '$valor', '$categoria','$mes', '$origem')";
+                    $sql_code = "INSERT INTO entradas(entrada, valor, mes) VALUES ('$gasto', '$valor', '$mes')";
 
                     if(mysqli_query($mysqli, $sql_code)) {
                         echo "<script>window.location.href = window.location.href;</script>";
@@ -115,24 +100,20 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                 <div class="exibe-gastos">
                 <table class="saidas">
                     <thead>
-                    <th>Gasto</th>
+                    <th>Entrada</th>
                     <th>Valor</th>
-                    <th>Categoria</th>
                     <th>Mês</th>
-                    <th>Origem</th>
                     <th>Data inserção</th>
                     <th colspan="2"></th>
                     </thead>
 
                     <?php
-                    while($dados = $sql_saidas->fetch_assoc()) {
+                    while($dados = $sql_entradas->fetch_assoc()) {
                         ?>
                     <tbody>
-                        <td><?php echo $dados['gasto']; ?></td>
+                        <td><?php echo $dados['entrada']; ?></td>
                         <td>R$ <?php echo $dados['valor']; ?></td>
-                        <td><?php echo $dados['categoria']; ?></td>
                         <td><?php echo $dados['mes']; ?></td>
-                        <td><?php echo $dados['origem']; ?></td>
                         <td><?php echo $dados['data']; ?></td>
                         <td><form method="GET">
                                 <input type="hidden" name="referencial" value="<?php echo $dados['referencial']; ?>">
@@ -144,7 +125,7 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                             $referencial = intval($_GET["referencial"]); 
                         
                             if ($referencial > 0) { 
-                                $sql_delete = "DELETE FROM saidas WHERE referencial = $referencial";
+                                $sql_delete = "DELETE FROM entradas WHERE referencial = $referencial";
                             
                                 if ($mysqli->query($sql_delete) === TRUE) {
                                     echo "<script>window.location.href = 'saidas.php';</script>"; 
@@ -169,8 +150,9 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                     <tfoot>
                       <tr>
                         <td>Total</td>
-                        <td>R$ <?php echo $tot_saidas['total_saidas']?></td>
-                        <td colspan="6"></td>
+                        <td>R$ <?php echo $tot_entradas['total_entradas']?></td>
+                        <td>Qtd. <?php echo $qtd_entradas['qtd_entradas'] ?></td>
+                        <td colspan="5"></td>
                       </tr>
                     </tfoot>
                 </table>

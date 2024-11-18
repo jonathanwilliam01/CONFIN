@@ -6,6 +6,10 @@ $sql_tot_saidas = "select sum(valor) as total_saidas from saidas";
 $sql_query = $mysqli->query($sql_tot_saidas) or die("Erro ao consultar" . $mysqli ->error);
 $tot_saidas = $sql_query ->fetch_assoc();
 
+$qtd_tot_saidas = "select count(referencial) as qtd_saidas from saidas";
+$sql_query = $mysqli->query($qtd_tot_saidas) or die("Erro ao consultar" . $mysqli ->error);
+$qtd_saidas = $sql_query ->fetch_assoc();
+
 $saidas = "select s.referencial, s.gasto, s.valor, 
 ca.categoria, m.mes, o.origem, date_format(s.data, '%d/%m/%Y') as data
 from saidas s
@@ -45,8 +49,6 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
         </div>
 
 <div class="conteudo">
-
-   <!-- MENU LATERAL -->
 
              <!-- TITULO -->
              <div class="header-dash">
@@ -170,7 +172,8 @@ $sql_saidas = $mysqli->query(query: $saidas) or die("Erro ao consultar" . $mysql
                       <tr>
                         <td>Total</td>
                         <td>R$ <?php echo $tot_saidas['total_saidas']?></td>
-                        <td colspan="6"></td>
+                        <td>Qtd. <?php echo $qtd_saidas['qtd_saidas'] ?></td>
+                        <td colspan="5"></td>
                       </tr>
                     </tfoot>
                 </table>
